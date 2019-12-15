@@ -1,17 +1,20 @@
 class Star {
-
     constructor(x, y, radius, c) {
         this.x = x;
         this.y = y;
         this.radius = radius;
-        this.color = c || color(random(100, 255), random(100, 255), random(100, 255));
+        this.id = starIdCounter;
+        starIdCounter++;
+
+        let r = random(50, 255);
+        let g = random(50, 255);
+        let b = random(50, 255);
+        this.color = c || color(r, g, b);
+
         this.thrustX = 0;
         this.thrustY = 0;
         this.influenceRadius = 0;
         this.updateInfluence();
-
-        this.id = starIndex;
-        starIndex++;
     }
 
     setColor(r, g, b) {
@@ -46,11 +49,12 @@ class Star {
 
     gravitateTo(target) {
         let distance = vDistance(this, target);
-        let scale = (target.radius / distance/2);
+        let scale = (target.radius / distance / 2);
 
         if (distance <= target.influenceRadius) {
             let diffX = (target.x - this.x) / target.influenceRadius * scale;
             let diffY = (target.y - this.y) / target.influenceRadius * scale;
+
             this.thrustX += diffX;
             this.thrustY += diffY;
         }
@@ -65,12 +69,19 @@ class Star {
         }
     }
 
-    consume(victim) {
-        this.radius = this.radius + victim.radius*(victim.radius/this.radius);
-        victim.radius = 0;
-
-        victim.updateInfluence();
+    consume(target) {
+        this.radius = this.radius + target.radius * (target.radius / this.radius);
+        killQueue.push(target);
         this.updateInfluence();
+    }
+
+    destroy() {
+        for (let i = 0; i < stars.length; i++) {
+            if (stars[i].id == this.id) {
+                stars.splice(i, 1);
+                break;
+            }
+        }
     }
 
     updateInfluence() {
@@ -78,16 +89,17 @@ class Star {
     }
 
     draw() {
+
+        // Draw toward center
+        this.thrustX += (width/2 - this.x) * this.radius/100/width/100;
+        this.thrustY += (height/2 - this.y) * this.radius/100/height/100;
+
         this.x += this.thrustX;
         this.y += this.thrustY;
 
-        if (this.x > width || this.x < 0 || this.y > height || this.y < 0) {
-            // DESTROY THE STAR
-        }
-
         // Influence
         noStroke();
-        fill(red(this.color), green(this.color), blue(this.color), 50);
+        fill(red(this.color), green(this.color), blue(this.color), 40);
         circle(this.x, this.y, this.influenceRadius * 2);
 
 

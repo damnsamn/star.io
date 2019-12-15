@@ -9,9 +9,6 @@ class Player {
         this.thrustX = 0;
         this.thrustY = 0;
         this.influenceRadius = size/2 * 10;
-
-        this.id = starIndex;
-        starIndex++;
     }
 
     draw() {
