@@ -2,6 +2,7 @@
 var w = 800;
 var h = 800;
 var bg = 0;
+var viewScale = 1;
 var windowCenter = { x: w / 2, y: h / 2 };
 var stars = [];
 var starIndex = 0;
@@ -17,6 +18,9 @@ function setup() {
 
 function draw() {
     background(bg);
+    translate(width/2, height/2)
+    scale(viewScale);
+    translate(-width/2, -height/2);
 
     // translate(width / 2, height / 2);
     // Draw Game Objects
@@ -35,6 +39,7 @@ function draw() {
             }
         }
     }
+
 
     if (mouseHold) {
     }
@@ -55,14 +60,13 @@ function mouseReleased() {
 }
 
 function mouseWheel(event) {
-    let thrust = 0;
+    let change = 0;
     if (event.delta < 0)
-        thrust += 10;
+        change += 0.05;
     else if (event.delta > 0)
-        thrust -= 10;
+        change -= 0.05;
 
-    player.thrust = constrain(player.thrust += thrust, 0, 100);
-    console.log(player.thrust);
+    viewScale = constrain(viewScale + change, 0.25, 1);
     return false;
 }
 
@@ -109,4 +113,10 @@ function drawUI() {
     noFill();
     line(mouseX - 5, mouseY, mouseX + 5, mouseY);
     line(mouseX, mouseY - 5, mouseX, mouseY + 5);
+}
+
+function within(a, n, b) {
+
+
+    return (a >= b-n && a <= b+n);
 }
