@@ -7,21 +7,24 @@ var windowCenter = { x: w / 2, y: h / 2 };
 var stars = [];
 var starIdCounter = 0;
 var starIndexCounter = 0;
+var starBorder = 2;
 var mouseHold;
 var player;
 var lastTouch;
 var killQueue = [];
 var mouse = {};
 var frameCount = 0;
+var spawnArena = { w: w * 10, h: h * 10}
 let focusStar;
 
 function setup() {
     createCanvas(w, h);
     textSize(16);
+    frameRate(60);
     player = new Player(width / 2, height / 2, 10);
 
     for (let i = 0; i < 100; i++)
-        stars.push(new Star(random(-width * 1.5, width * 2.5), random(-height * 1.5, height * 2.5), random(5, 10)));
+        stars.push(new Star(random(-spawnArena.w / 2 + width/2, spawnArena.w / 2 + width/2), random(-spawnArena.h / 2 + height/2, spawnArena.h / 2 + height/2), random(5, 10)));
 }
 
 function draw() {
@@ -64,9 +67,9 @@ function draw() {
     drawUI();
 
     frameCount++;
-    if (frameCount >= frameRate() / 2) {
+    if (frameCount >= frameRate() * 1) {
         frameCount = 0;
-        stars.push(new Star(random(width), random(height), random(5, 10)));
+        stars.push(new Star(random(-spawnArena.w / 2, spawnArena.w / 2), random(-spawnArena.h / 2, spawnArena.h / 2), random(5, 10)));
     }
 }
 
@@ -79,7 +82,7 @@ function mousePressed() {
     //     stars.push(new Star(random(width), random(height), random(5, 10)));
 
     for (let star of stars) {
-        if (within(mouse.x, star.radius, star.x) && within(mouse.y, star.radius, star.y)) {
+        if (within(mouse.x, star.radius + starBorder/viewScale, star.x) && within(mouse.y, star.radius + starBorder/viewScale, star.y)) {
             focusStar = star;
             console.log(focusStar);
         }
@@ -148,7 +151,7 @@ function drawUI() {
 
     // Bounding box
     rectMode(CORNER);
-    strokeWeight(2);
+    strokeWeight(starBorder);
     stroke(255, 0, 0);
     noFill();
     rect(1, 1, width - 2, height - 2);
@@ -163,9 +166,14 @@ function drawUI() {
     // Reticle
     stroke(255);
     noFill();
-    strokeWeight(2 / viewScale)
-    line(mouse.x - 5 / viewScale, mouse.y, mouse.x + 5 / viewScale, mouse.y);
-    line(mouse.x, mouse.y - 5 / viewScale, mouse.x, mouse.y + 5 / viewScale);
+
+    strokeWeight(1 / viewScale)
+    circle(mouse.x, mouse.y, 20/viewScale)
+    fill(255);
+    noStroke();
+    circle(mouse.x, mouse.y, 3/viewScale)
+    // line(mouse.x - 5 / viewScale, mouse.y, mouse.x + 5 / viewScale, mouse.y);
+    // line(mouse.x, mouse.y - 5 / viewScale, mouse.x, mouse.y + 5 / viewScale);
 }
 
 function within(a, n, b) {

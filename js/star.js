@@ -98,18 +98,20 @@ class Star {
         this.thrustY += (height/2 - this.y) * this.radius/100/height/100;
 
 
-        this.x += this.thrustX;
-        this.y += this.thrustY;
+        this.x += this.thrustX/2;
+        this.y += this.thrustY/2;
 
         // Influence
         noStroke();
         fill(red(this.color), green(this.color), blue(this.color), 40);
         circle(this.x, this.y, this.influenceRadius * 2);
 
+        // TODO: Draw approx. trajectory;
+
 
         // Star
         fill(this.color);
-        strokeWeight(2 / viewScale);
+        strokeWeight(starBorder / viewScale);
         stroke(darken(red(this.color), green(this.color), blue(this.color), 0.6));
         circle(this.x, this.y, this.radius * 2);
     }
