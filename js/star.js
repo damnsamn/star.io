@@ -49,7 +49,7 @@ class Star {
 
     gravitateTo(target) {
         let distance = vDistance(this, target);
-        let scale = (target.radius / distance / 2);
+        let scale = (target.radius / distance / 0.5);
 
         if (distance <= target.influenceRadius) {
             let diffX = (target.x - this.x) / target.influenceRadius * scale;
@@ -65,6 +65,9 @@ class Star {
             }
             else {
                 target.consume(this);
+
+                if (this == focusStar)
+                    focusStar = target;
             }
         }
     }
@@ -94,6 +97,7 @@ class Star {
         this.thrustX += (width/2 - this.x) * this.radius/100/width/100;
         this.thrustY += (height/2 - this.y) * this.radius/100/height/100;
 
+
         this.x += this.thrustX;
         this.y += this.thrustY;
 
@@ -105,7 +109,7 @@ class Star {
 
         // Star
         fill(this.color);
-        strokeWeight(2);
+        strokeWeight(2 / viewScale);
         stroke(darken(red(this.color), green(this.color), blue(this.color), 0.6));
         circle(this.x, this.y, this.radius * 2);
     }

@@ -9,6 +9,7 @@ var starIdCounter = 0;
 var starIndexCounter = 0;
 var mouseHold;
 var player;
+var lastTouch;
 var killQueue = [];
 var mouse = {};
 var frameCount = 0;
@@ -29,10 +30,8 @@ function draw() {
     scale(viewScale);
     translate(-width / 2, -height / 2);
 
+    setMouse();
 
-    // TODO: fix mouse.x and mouse.y
-
-    // translate(width / 2, height / 2);
     // Draw Game Objects
     // player.draw();
     firingSquad();
@@ -80,10 +79,11 @@ function mousePressed() {
     //     stars.push(new Star(random(width), random(height), random(5, 10)));
 
     for (let star of stars) {
-        if (within(mouseX, star.radius, star.x) && within(mouseY, star.radius, star.y))
+        if (within(mouse.x, star.radius, star.x) && within(mouse.y, star.radius, star.y)) {
             focusStar = star;
+            console.log(focusStar);
+        }
     }
-    console.log(stars);
     mouseHold = true;
 }
 
@@ -100,6 +100,23 @@ function mouseWheel(event) {
 
     // viewScale = constrain(viewScale + change, 0, 1);
     return false;
+}
+
+function touchMoved(event) {
+    if (touches.length) {
+        let scale = 1.1;
+
+        let newTouch = touches[0];
+
+        if (lastTouch && lastTouch.y) {
+            if (newTouch.y < lastTouch.y)
+                viewScale *= scale;
+            else
+                viewScale /= scale;
+        }
+
+        lastTouch = newTouch;
+    }
 }
 
 // Helper functions
@@ -129,12 +146,12 @@ function drawUI() {
     translate(player.x - width / 2, player.y - height / 2);
 
 
-    // // Bounding box
-    // rectMode(CORNER);
-    // strokeWeight(2);
-    // stroke(255, 0, 0);
-    // noFill();
-    // rect(1, 1, width - 2, height - 2);
+    // Bounding box
+    rectMode(CORNER);
+    strokeWeight(2);
+    stroke(255, 0, 0);
+    noFill();
+    rect(1, 1, width - 2, height - 2);
 
 
     // Thrust bar
@@ -146,8 +163,9 @@ function drawUI() {
     // Reticle
     stroke(255);
     noFill();
-    line(mouse.x - 5, mouse.y, mouse.x + 5, mouse.y);
-    line(mouse.x, mouse.y - 5, mouse.x, mouse.y + 5);
+    strokeWeight(2 / viewScale)
+    line(mouse.x - 5 / viewScale, mouse.y, mouse.x + 5 / viewScale, mouse.y);
+    line(mouse.x, mouse.y - 5 / viewScale, mouse.x, mouse.y + 5 / viewScale);
 }
 
 function within(a, n, b) {
@@ -159,4 +177,14 @@ function firingSquad() {
         star.destroy();
     })
     killQueue = [];
+}
+
+function setMouse() {
+    mouse.x = mouseX / viewScale - width / viewScale / 2 + width / 2;
+    mouse.y = mouseY / viewScale - height / viewScale / 2 + height / 2;
+
+    if (focusStar) {
+        mouse.x -= windowCenter.x - focusStar.x;
+        mouse.y -= windowCenter.y - focusStar.y;
+    }
 }
