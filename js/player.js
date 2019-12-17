@@ -1,43 +1,18 @@
-class Player {
-
-    constructor(x, y, size, c) {
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        this.color = c || color(random(100, 255), random(100, 255), random(100, 255));
-        this.thrust = 0;
-        this.thrustX = 0;
-        this.thrustY = 0;
-        this.influenceRadius = size/2 * 10;
-    }
-
-    draw() {
-        this.x += this.thrustX;
-        this.y += this.thrustY;
-        this.y -= this.thrust/10;
-
-        // push();
-        translate(windowCenter.x - this.x, windowCenter.y - this.y);
-
-        if (this.x > width || this.x < 0 || this.y > height || this.y < 0) {
-            // DESTROY THE STAR
-        }
-
-        // Influence
-        noStroke();
-        fill(red(this.color), green(this.color), blue(this.color), 50);
-        circle(this.x, this.y, this.influenceRadius * 2);
-
-        // Thruster
-        rectMode(CENTER);
-        rect(this.x, this.y + this.size/2, this.size/1.5, 5);
-        line(this.x, this.y, mouseX, mouseY)
+class Player extends Star {
 
 
-        // Star
-        fill(this.color);
-        strokeWeight(2);
-        stroke(darken(red(this.color), green(this.color), blue(this.color), 0.6));
-        circle(this.x, this.y, this.size);
+
+    thrust() {
+        let distance = vDistance(this, mouse);
+        let scale = (this.radius / distance / 0.5);
+
+        let diffX = (mouse.x - this.x) / this.influenceRadius * scale;
+        let diffY = (mouse.y - this.y) / this.influenceRadius * scale;
+
+        stroke(255 - red(this.color), 255 - green(this.color), 255 - blue(this.color))
+        line(this.x, this.y, this.x + diffX / scale * viewScale, this.y + diffY / scale * viewScale);
+
+        this.thrustX += diffX;
+        this.thrustY += diffY;
     }
 }
