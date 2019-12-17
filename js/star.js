@@ -70,8 +70,8 @@ class Star {
                 target.consume(this);
 
                 if (this == focusStar) {
-                    this.thrustX = 0;
-                    this.thrustY = 0;
+                    focusStar.thrustX = 0;
+                    focusStar.thrustY = 0;
                 }
             }
         }
