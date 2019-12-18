@@ -81,7 +81,7 @@ class Star {
         let increase = target.radius * (target.radius / this.radius);
         if (this === focusStar) {
             let ratio = (this.radius + increase) / this.radius;
-            viewScale /= ratio;
+            zoomTarget /= ratio;
         }
 
         if (target === focusStar) {

@@ -18,12 +18,15 @@ var spawnArena = { w: w * 20, h: h * 20 }
 var focusStar;
 var uiLinesX = 0;
 var uiLinesY = 0;
+var zoomTarget;
+var zoomCounter = 0;
 var win, lose;
 
 function setup() {
     createCanvas(w, h);
     textSize(16);
     player = new Player(width / 2, height / 2, 10);
+    zoomTarget = viewScale;
 
     for (let i = 0; i < 100; i++)
         stars.push(new Star(random(-spawnArena.w / 2 + width / 2, spawnArena.w / 2 + width / 2), random(-spawnArena.h / 2 + height / 2, spawnArena.h / 2 + height / 2), random(5, 10)));
@@ -38,6 +41,7 @@ function draw() {
 
     translate(width / 2, height / 2)
     scale(viewScale);
+    zoom(zoomTarget);
     translate(-width / 2, -height / 2);
     setMouse();
 
@@ -89,7 +93,7 @@ function draw() {
         let c = focusStar.color;
         c.setAlpha(50);
         fill(c)
-        rect(0,0, width / viewScale, height / viewScale);
+        rect(0, 0, width / viewScale, height / viewScale);
     }
 
 }
@@ -117,9 +121,9 @@ function mouseReleased() {
 function mouseWheel(event) {
     let scale = 1.1;
     if (event.delta < 0)
-        viewScale *= scale;
+        zoomTarget *= scale;
     else if (event.delta > 0)
-        viewScale /= scale;
+        zoomTarget /= scale;
 
     // viewScale = constrain(viewScale + change, 0, 1);
     return false;
@@ -133,9 +137,9 @@ function touchMoved(event) {
 
         if (lastTouch && lastTouch.y) {
             if (newTouch.y < lastTouch.y)
-                viewScale *= scale;
+                zoomTarget *= scale;
             else
-                viewScale /= scale;
+                zoomTarget /= scale;
         }
 
         lastTouch = newTouch;
@@ -269,4 +273,13 @@ function focus(star) {
     star.setColor()
     focusStar = star;
     console.log(focusStar);
+}
+
+function zoom(target) {
+    let diff = target - viewScale;
+
+    viewScale += diff * 0.1;
+
+    if (within(target, 0.001, viewScale))
+        viewScale = target;
 }
