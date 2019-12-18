@@ -16,16 +16,17 @@ var mouse = {};
 var frameCount = 0;
 var spawnArena = { w: w * 20, h: h * 20 }
 var focusStar;
-var uiLinesX = 0;
-var uiLinesY = 0;
 var zoomTarget;
 var zoomCounter = 0;
 var win, lose;
+
+var UI;
 
 function setup() {
     createCanvas(w, h);
     textSize(16);
     player = new Player(width / 2, height / 2, 10);
+    UI = new UserInterface();
     zoomTarget = viewScale;
 
     for (let i = 0; i < 100; i++)
@@ -60,11 +61,19 @@ function draw() {
 
     if (stars.length) {
         for (n = 0; n < stars.length; n++) {
-
+            let focussed = stars[n] === focusStar;
             if (stars[n])
                 for (i = 0; i < stars.length; i++) {
                     if (stars[i] != stars[n] && stars[i])
                         stars[n].gravitateTo(stars[i])
+
+                    // Alert to nearby Big Bois
+                    // TODO
+                    if (focussed && stars[i].radius > 1.5 * stars[n].radius && within(stars[i].x, width / viewScale, stars[n].x) && within(stars[i].y, height / viewScale, stars[n].y) && !within(stars[i].x, width / 2 / viewScale, stars[n].x) && !within(stars[i].y, height / 2 / viewScale, stars[n].y)) {
+                        stroke(255)
+                        line(stars[n].x, stars[n].y, stars[i].x, stars[i].y);
+                        console.log("alert")
+                    }
                 }
 
             if (stars[n])
@@ -81,7 +90,7 @@ function draw() {
             focusStar.thrust()
     }
 
-    drawUI();
+    UI.draw();
 
     frameCount++;
     if (frameCount >= frameRate() / 2) {
@@ -106,11 +115,12 @@ function mousePressed() {
     // for (let i = 0; i < 50; i++)
     //     stars.push(new Star(random(width), random(height), random(5, 10)));
 
-    // for (let star of stars) {
-    //     if (within(mouse.x, star.radius + starBorder / viewScale, star.x) && within(mouse.y, star.radius + starBorder / viewScale, star.y)) {
-    //         focus(star);
-    //     }
-    // }
+    for (let star of stars) {
+        if (within(mouse.x, star.radius + starBorder / viewScale, star.x) && within(mouse.y, star.radius + starBorder / viewScale, star.y)) {
+            // focus(star);
+            UI.addWarning(star);
+        }
+    }
     mouseHold = true;
 }
 

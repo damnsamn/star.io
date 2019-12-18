@@ -90,7 +90,6 @@ class Star {
         this.radius = this.radius + increase;
 
 
-
         killQueue.push(target);
         this.updateInfluence();
     }
