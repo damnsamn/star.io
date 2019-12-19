@@ -13,6 +13,8 @@ class UserInterface {
     }
 
     draw() {
+        this.vw = width / viewScale;
+        this.vh = height / viewScale;
 
 
         this.color = color(lighten(red(focusStar.color), green(focusStar.color), blue(focusStar.color), 0.6));
@@ -102,13 +104,13 @@ class UIWarning {
         let hyp = sqrt(sq(this.star.x - focusStar.x) + sq(this.star.y - focusStar.y));
         console.log(hyp);
 
-        let diffX = (width/2/viewScale) / hyp;
-        let diffY = (height/2/viewScale) / hyp;
+        let diffX = ((width-50)/2/viewScale) / hyp;
+        let diffY = ((height-50)/2/viewScale) / hyp;
         let constrainedX = diffX * (this.star.x - focusStar.x);
         let constrainedY = diffY * (this.star.y - focusStar.y);
 
         fill(255,0,0);
         noStroke();
-        circle(constrainedX/viewScale + UI.vw/2, constrainedY/viewScale + UI.vh/2, 10/viewScale);
+        circle(constrainedX + UI.vw/2, constrainedY + UI.vh/2, 10/viewScale);
     }
 }
