@@ -94,7 +94,7 @@ function draw() {
 
     UI.draw();
 
-    if (frameCount % 20 == 0) {
+    if (frameCount % 30 == 0) {
         stars.push(new Star(random(-spawnArena.w / 2, spawnArena.w / 2), random(-spawnArena.h / 2, spawnArena.h / 2), random(5, 10)));
     }
 
