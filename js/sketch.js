@@ -124,7 +124,14 @@ function mousePressed() {
     mouseHold = true;
 }
 
+function touchStarted() {
+    mouseHold = true;
+}
+
 function mouseReleased() {
+    mouseHold = false;
+}
+function touchEnded() {
     mouseHold = false;
 }
 
@@ -143,12 +150,12 @@ function touchMoved(event) {
     if (touches.length) {
         let scale = 1.1;
 
-        let newTouch = touches[0];
+        let newTouch = touches[1];
 
         if (lastTouch && lastTouch.y) {
-            if (newTouch.y < lastTouch.y)
+            if (newTouch.y < lastTouch.y - 1)
                 zoomTarget *= scale;
-            else
+            else if (newTouch.y > lastTouch.y + 1)
                 zoomTarget /= scale;
         }
 
