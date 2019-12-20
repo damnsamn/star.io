@@ -6,7 +6,8 @@ class Star {
         this.radius = radius;
         this.id = starIdCounter;
         starIdCounter++;
-        this.color = c || color("#999");
+        // this.color = c || color("#999");
+        this.color = c || color(random(50, 255),random(50, 255),random(50, 255));
 
         this.thrustX = 0;
         this.thrustY = 0;

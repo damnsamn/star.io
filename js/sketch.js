@@ -69,11 +69,13 @@ function draw() {
 
                     // Alert to nearby Big Bois
                     // TODO
-                    if (focussed && stars[i].radius > 1.5 * stars[n].radius && within(stars[i].x, width / viewScale, stars[n].x) && within(stars[i].y, height / viewScale, stars[n].y) && !within(stars[i].x, width / 2 / viewScale, stars[n].x) && !within(stars[i].y, height / 2 / viewScale, stars[n].y)) {
-                        stroke(255)
-                        line(stars[n].x, stars[n].y, stars[i].x, stars[i].y);
-                        console.log("alert")
-                    }
+                    // if (focussed && stars[i].radius > 1.5 * stars[n].radius) {
+                    //     if (within(stars[i].x, width / viewScale, stars[n].x) && within(stars[i].y, height / viewScale, stars[n].y))
+                    //         UI.addWarning(stars[i]);
+
+                    //     if (within(stars[i].x, width / 2 / viewScale, stars[n].x) && within(stars[i].y, height / 2 / viewScale, stars[n].y))
+                    //         UI.removeWarning(stars[i]);
+                    // }
                 }
 
             if (stars[n])
@@ -221,7 +223,4 @@ function zoom(target) {
     let diff = target - viewScale;
 
     viewScale += diff * 0.1;
-
-    if (within(target, 0.001, viewScale))
-        viewScale = target;
 }

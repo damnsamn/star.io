@@ -76,8 +76,14 @@ class UserInterface {
 
         noStroke();
         fill(this.color);
+        textAlign(LEFT);
         textSize(14 / viewScale);
         text(`Score: ${round(focusStar.radius)}`, 150 / viewScale, 25 / viewScale, 0);
+        fill(255,255,0);
+        stroke(0);
+        strokeWeight(2/viewScale);
+        textAlign(RIGHT);
+        text(round(frameRate()), (height-25) / viewScale, 25 / viewScale, 0);
 
 
         for (let warning of this.warnings) {
@@ -88,7 +94,19 @@ class UserInterface {
 
     addWarning(star) {
         this.warnings.push(new UIWarning(star));
-        console.log(this.warnings)
+    }
+
+    removeWarning(star) {
+        for (let i = 0; i < this.warnings.length; i++) {
+            if (this.warnings[i].id == star.id) {
+                this.warnings.splice(i, 1)
+                break;
+            }
+        }
+    }
+
+    getWarnings() {
+
     }
 }
 
@@ -102,15 +120,24 @@ class UIWarning {
     draw() {
         // TODO - this is shit
         let hyp = sqrt(sq(this.star.x - focusStar.x) + sq(this.star.y - focusStar.y));
-        console.log(hyp);
 
-        let diffX = ((width-50)/2/viewScale) / hyp;
-        let diffY = ((height-50)/2/viewScale) / hyp;
+        let diffX = ((width - 50) / 2 / viewScale) / hyp;
+        let diffY = ((height - 50) / 2 / viewScale) / hyp;
         let constrainedX = diffX * (this.star.x - focusStar.x);
         let constrainedY = diffY * (this.star.y - focusStar.y);
 
-        fill(255,0,0);
+
+        push();
+        translate(constrainedX + UI.vw / 2, constrainedY + UI.vh / 2);
+        fill(this.color);
         noStroke();
-        circle(constrainedX + UI.vw/2, constrainedY + UI.vh/2, 10/viewScale);
+
+        let a = atan2((this.star.y - focusStar.y), (this.star.x - focusStar.x))
+        rotate(a + PI / 2);
+        triangle(0, 0, 7 / viewScale, 7 / viewScale, -7 / viewScale, 7 / viewScale);
+        pop();
+
+
+        // circle(constrainedX + UI.vw/2, constrainedY + UI.vh/2, 10/viewScale);
     }
 }
