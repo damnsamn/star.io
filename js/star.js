@@ -105,7 +105,7 @@ class Star {
     }
 
     updateInfluence() {
-        this.influenceRadius = this.radius * 10;
+        this.influenceRadius = this.radius * 20;
     }
 
 
@@ -121,7 +121,7 @@ class Star {
 
         // Influence
         noStroke();
-        fill(red(this.color), green(this.color), blue(this.color), 40);
+        fill(red(this.color), green(this.color), blue(this.color), 15);
         circle(this.x, this.y, this.influenceRadius * 2);
 
 
