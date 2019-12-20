@@ -1,5 +1,4 @@
 var frames = [];
-
 class UserInterface {
     constructor() {
         this.score = 0;
@@ -9,6 +8,7 @@ class UserInterface {
         this.thrustIndicatorX = 0;
         this.thrustIndicatorY = 0;
         this.warnings = [];
+        this.starGraph = new Graph(0, 250, 300, 100);
     }
 
     draw() {
@@ -28,22 +28,7 @@ class UserInterface {
         circle(mouse.x, mouse.y, 3 / viewScale)
 
         // Translate for view-relative UI;
-
         translate(focusStar.x - focusStar.thrustX / 2 - width / viewScale / 2, focusStar.y - focusStar.thrustY / 2 - height / viewScale / 2);
-
-
-        // // Bounding box
-        // rectMode(CORNER);
-        // strokeWeight(starBorder);
-        // stroke(255, 0, 0);
-        // noFill();
-        // rect(1, 1, width - 2, height - 2);
-
-
-        // // Thrust bar
-        // noStroke();
-        // fill(player.color);
-        // rect(0, height - player.thrust * 2, 5, player.thrust * 2);
 
         stroke(this.color);
         strokeWeight(1.5 / viewScale)
@@ -63,16 +48,17 @@ class UserInterface {
             line(boxSize / n * i + this.thrustIndicatorX, 0, boxSize / n * i + this.thrustIndicatorX, boxSize);
             line(0, boxSize / n * i + this.thrustIndicatorY, boxSize, boxSize / n * i + this.thrustIndicatorY);
         }
-        // Box
+
         fill(0, 0, 0, 100);
         stroke(this.color);
         rect(0, 0, boxSize, boxSize);
-        // Circle
+
         fill(this.color);
         noStroke()
         circle(boxSize / 2, boxSize / 2, 10 / viewScale);
         pop();
 
+        // Score
         noStroke();
         fill(this.color);
         textAlign(LEFT);
@@ -89,9 +75,12 @@ class UserInterface {
 
 
         for (let warning of this.warnings) {
-            // console.log(warning)
             warning.draw();
         }
+        if (frameCount % 30 == 0)
+            this.starGraph.plot(stars.length);
+        this.starGraph.draw((width - 325) / viewScale, (height - 125) / viewScale);
+
     }
 
     addWarning(star) {
@@ -159,4 +148,63 @@ function getAvgFrameRate() {
     });
     avgFrameRate = round(avgFrameRate / frames.length);
     return avgFrameRate;
+}
+
+class Graph {
+    constructor(min, max, width, height) {
+        this.min = min;
+        this.max = max;
+        this.w = width;
+        this.h = height;
+        this.xScale = 60;
+        this.updateDimensions();
+
+
+        this.values = [0]
+    }
+
+    plot(val) {
+        this.values.push(val);
+
+        if (this.values.length > this.xScale)
+            this.values.shift();
+    }
+
+    updateDimensions() {
+        this.width = this.w / viewScale;
+        this.height = this.h / viewScale;
+
+        this.yStep = this.max / this.height;
+        this.xStep = this.width / this.xScale;
+    }
+
+    draw(x, y) {
+        this.updateDimensions();
+        push();
+        translate(x, y);
+
+        stroke(UI.color);
+        let xAxis = line(0, this.height, this.width, this.height)
+        let yAxis = line(0, 0, 0, this.height);
+
+        textAlign(RIGHT);
+        noStroke();
+        fill(UI.color);
+        let yMax = text(this.max, 0, 0, 0);
+        let yMin = text(0, 0, this.height, 0);
+
+        if (this.values.length > 1)
+            for (let i = 0; i < this.values.length; i++) {
+                let lastValX = stars[i - 1] ? this.width - this.xStep * (this.values.length - i) : 0;
+                let lastValY = stars[i - 1] ? this.height - (this.values[i - 1] / this.yStep) : this.height - (this.values[i] / this.yStep);
+                let valX = lastValX + this.xStep;
+                let valY = this.height - (this.values[i] / this.yStep);
+                stroke(255);
+                strokeWeight(1.5 / viewScale)
+                line(lastValX, lastValY, valX, valY);
+                // debugger;
+            }
+
+        pop();
+    }
 }
