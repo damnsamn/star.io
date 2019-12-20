@@ -1,5 +1,4 @@
-
-
+var frames = [];
 
 class UserInterface {
     constructor() {
@@ -79,11 +78,14 @@ class UserInterface {
         textAlign(LEFT);
         textSize(14 / viewScale);
         text(`Score: ${round(focusStar.radius)}`, 150 / viewScale, 25 / viewScale, 0);
-        fill(255,255,0);
+
+        // Debug Info
+        fill(255, 255, 0);
         stroke(0);
-        strokeWeight(2/viewScale);
+        strokeWeight(2 / viewScale);
         textAlign(RIGHT);
-        text(round(frameRate()), (height-25) / viewScale, 25 / viewScale, 0);
+        text(round(getAvgFrameRate()), (width - 25) / viewScale, 25 / viewScale);
+        text(`${stars.length} total`, (width - 25) / viewScale, 50 / viewScale);
 
 
         for (let warning of this.warnings) {
@@ -140,4 +142,21 @@ class UIWarning {
 
         // circle(constrainedX + UI.vw/2, constrainedY + UI.vh/2, 10/viewScale);
     }
+}
+
+function getAvgFrameRate() {
+    // Draw framerate (over 60 frames)
+    let avgLimit = 60;
+    if (frames.length < avgLimit) {
+        frames.push(round(frameRate()));
+    } else if (frames.length == avgLimit) {
+        frames.splice(0, 1);
+        append(frames, round(frameRate()));
+    }
+    let avgFrameRate = 0;
+    frames.forEach(function (i) {
+        avgFrameRate += i;
+    });
+    avgFrameRate = round(avgFrameRate / frames.length);
+    return avgFrameRate;
 }

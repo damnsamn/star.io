@@ -1,6 +1,6 @@
 // Global Variables
-var w = 800;
-var h = 800;
+var w = window.innerWidth;
+var h = window.innerHeight;
 var bg = 10;
 var viewScale = 1;
 var windowCenter = { x: w / 2, y: h / 2 };
@@ -14,7 +14,7 @@ var lastTouch;
 var killQueue = [];
 var mouse = {};
 var frameCount = 0;
-var spawnArena = { w: w * 20, h: h * 20 }
+var spawnArena = { w: 800 * 20, h: 800 * 20 }
 var focusStar;
 var zoomTarget;
 var zoomCounter = 0;
